@@ -45,7 +45,7 @@ export default function QuotesTicker({ position = 'top' }: { position?: 'top' | 
   }, []);
 
   return (
-    <div className={`w-full bg-pink-900/50 border-y border-pink-500/30 overflow-hidden h-10 flex items-center justify-center relative z-40 ${position === 'top' ? 'sticky top-0' : ''}`}>
+    <div className={`w-full bg-pink-100/80 border-y border-pink-200 overflow-hidden h-10 flex items-center justify-center relative z-40 ${position === 'top' ? 'sticky top-0' : ''}`}>
       <AnimatePresence mode="wait">
         <motion.p
           key={index}
@@ -53,7 +53,7 @@ export default function QuotesTicker({ position = 'top' }: { position?: 'top' | 
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -20, opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-pink-200 text-sm md:text-base font-medium text-center px-4 absolute w-full"
+          className="text-pink-800 text-sm md:text-base font-medium text-center px-4 absolute w-full"
         >
           "{quotes[index]}"
         </motion.p>

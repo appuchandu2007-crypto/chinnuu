@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidReview(data) {
+      return data.keys().hasAll(['name', 'feedback', 'rating', 'date', 'likes']) &&
+             data.keys().size() <= 6 &&
+             data.name is string && data.name.size() <= 100 && data.name.size() > 0 &&
+             data.get('role', '') is string && data.get('role', '').size() <= 100 &&
+             data.feedback is string && data.feedback.size() <= 2000 && data.feedback.size() > 0 &&
+             data.rating is number && data.rating >= 1 && data.rating <= 5 &&
+             data.date is string && data.date.size() <= 64 &&
+             data.likes is number && data.likes >= 0;
+    }
+
+    function isValidThought(data) {
+      return data.keys().hasAll(['author', 'content', 'likes']) &&
+             data.keys().size() == 3 &&
+             data.author is string && data.author.size() <= 100 && data.author.size() > 0 &&
+             data.content is string && data.content.size() <= 2000 && data.content.size() > 0 &&
+             data.likes is number && data.likes >= 0;
+    }
+
+    function isValidEmotionCountsV2(data) {
+      return data.keys().hasAll(['Sad', 'Happy', 'Guilty', 'Fear', 'Shock', 'Confused', 'Angry', 'Lonely', 'Stressed', 'Tired', 'Heartbroken', 'Numb']) &&
+             data.keys().size() == 12 &&
+             data.Sad is number && data.Sad >= 0 &&
+             data.Happy is number && data.Happy >= 0 &&
+             data.Guilty is number && data.Guilty >= 0 &&
+             data.Fear is number && data.Fear >= 0 &&
+             data.Shock is number && data.Shock >= 0 &&
+             data.Confused is number && data.Confused >= 0 &&
+             data.Angry is number && data.Angry >= 0 &&
+             data.Lonely is number && data.Lonely >= 0 &&
+             data.Stressed is number && data.Stressed >= 0 &&
+             data.Tired is number && data.Tired >= 0 &&
+             data.Heartbroken is number && data.Heartbroken >= 0 &&
+             data.Numb is number && data.Numb >= 0;
+    }
+
+    match /reviews/{reviewId} {
+      // allow list queries (any query for reviews)
+      allow list: if true;
+      allow get: if isValidId(reviewId);
+      allow create: if isValidId(reviewId) && isValidReview(incoming());
+      allow update: if isValidId(reviewId) && isValidReview(incoming()) &&
+                    incoming().diff(existing()).affectedKeys().hasOnly(['likes']) &&
+                    incoming().likes == existing().likes + 1;
+    }
+
+    match /thoughts/{thoughtId} {
+      allow list: if true;
+      allow get: if isValidId(thoughtId);
+      allow create: if isValidId(thoughtId) && isValidThought(incoming());
+      allow update: if isValidId(thoughtId) && isValidThought(incoming()) &&
+                    incoming().diff(existing()).affectedKeys().hasOnly(['likes']) &&
+                    incoming().likes == existing().likes + 1;
+    }
+
+    match /status/emotions_v2 {
+      allow get: if true;
+      allow create: if isValidEmotionCountsV2(incoming());
+      allow update: if isValidEmotionCountsV2(incoming());
+    }
+  }
+}

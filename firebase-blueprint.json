@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Review": {
+      "title": "Review",
+      "description": "User reviews with feedback and ratings",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Name of the reviewer", "maxLength": 100 },
+        "role": { "type": "string", "description": "Role of the reviewer", "maxLength": 100 },
+        "feedback": { "type": "string", "description": "Review text details", "maxLength": 2000 },
+        "rating": { "type": "number" },
+        "date": { "type": "string" },
+        "likes": { "type": "number" }
+      },
+      "required": ["name", "feedback", "rating", "date", "likes"]
+    },
+    "Thought": {
+      "title": "Thought",
+      "description": "Thoughts shared by users",
+      "type": "object",
+      "properties": {
+        "author": { "type": "string", "maxLength": 100 },
+        "content": { "type": "string", "maxLength": 2000 },
+        "likes": { "type": "number" }
+      },
+      "required": ["author", "content", "likes"]
+    },
+    "EmotionCounts": {
+      "title": "EmotionCounts",
+      "description": "Global emotion click counts for v2",
+      "type": "object",
+      "properties": {
+        "Sad": { "type": "number" },
+        "Happy": { "type": "number" },
+        "Guilty": { "type": "number" },
+        "Fear": { "type": "number" },
+        "Shock": { "type": "number" },
+        "Confused": { "type": "number" },
+        "Angry": { "type": "number" },
+        "Lonely": { "type": "number" },
+        "Stressed": { "type": "number" },
+        "Tired": { "type": "number" },
+        "Heartbroken": { "type": "number" },
+        "Numb": { "type": "number" }
+      },
+      "required": ["Sad", "Happy", "Guilty", "Fear", "Shock", "Confused", "Angry", "Lonely", "Stressed", "Tired", "Heartbroken", "Numb"]
+    }
+  },
+  "firestore": {
+    "/reviews/{reviewId}": {
+      "schema": { "$ref": "#/entities/Review" },
+      "description": "Collection of all user reviews"
+    },
+    "/thoughts/{thoughtId}": {
+      "schema": { "$ref": "#/entities/Thought" },
+      "description": "Collection of all user thoughts"
+    },
+    "/status/emotions_v2": {
+      "schema": { "$ref": "#/entities/EmotionCounts" },
+      "description": "A single document tracking emotion clicks for 12 emotions"
+    }
+  }
+}

@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import Navbar from './components/Navbar';
 import QuotesTicker from './components/QuotesTicker';
 import Hero from './components/Hero';
@@ -14,12 +9,12 @@ import Emergency from './components/Emergency';
 import PrivacyTerms from './components/PrivacyTerms';
 import Footer from './components/Footer';
 import TermsPopup from './components/TermsPopup';
-import Chatbot from './components/Chatbot';
 import HelpButton from './components/HelpButton';
+import WhatsAppButton from './components/WhatsAppButton';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-slate-950 font-sans selection:bg-pink-500/30">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-pink-200">
       <TermsPopup />
       <QuotesTicker position="top" />
       <Navbar />
@@ -36,7 +31,7 @@ export default function App() {
 
       <Footer />
       <QuotesTicker position="bottom" />
-      <Chatbot />
+      <WhatsAppButton />
       <HelpButton />
     </div>
   );
