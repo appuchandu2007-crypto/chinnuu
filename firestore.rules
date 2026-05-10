@@ -48,6 +48,61 @@ service cloud.firestore {
              data.Numb is number && data.Numb >= 0;
     }
 
+    function isSignedIn() { return request.auth != null; }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['id', 'createdAt', 'updatedAt']) &&
+             data.id == request.auth.uid &&
+             data.createdAt is number && data.createdAt <= request.time.toMillis() + 60000 &&
+             data.updatedAt is number && data.updatedAt <= request.time.toMillis() + 60000 &&
+             (!data.keys().hasAny(['name']) || data.name is string) &&
+             (!data.keys().hasAny(['email']) || data.email is string) &&
+             (!data.keys().hasAny(['phone']) || data.phone is string) &&
+             (!data.keys().hasAny(['gender']) || data.gender is string) &&
+             (!data.keys().hasAny(['genderSpecify']) || data.genderSpecify is string) &&
+             (!data.keys().hasAny(['dob']) || data.dob is string) &&
+             (!data.keys().hasAny(['age']) || data.age is number) &&
+             (!data.keys().hasAny(['preferredLanguage']) || data.preferredLanguage is string) &&
+             (!data.keys().hasAny(['isFirstTimeUser']) || data.isFirstTimeUser is bool);
+    }
+
+    function isValidMoodEntry(data) {
+      return data.keys().hasAll(['mood', 'createdAt']) &&
+             data.mood is string && data.mood.size() > 0 &&
+             data.createdAt is number && data.createdAt <= request.time.toMillis() + 60000 &&
+             (!data.keys().hasAny(['reason']) || data.reason is string) &&
+             (!data.keys().hasAny(['firstTimeSupport']) || data.firstTimeSupport is string) &&
+             (!data.keys().hasAny(['betterSinceLastVisit']) || data.betterSinceLastVisit is string) &&
+             (!data.keys().hasAny(['sameSituation']) || data.sameSituation is string) &&
+             (!data.keys().hasAny(['previousHelpful']) || data.previousHelpful is string) &&
+             (!data.keys().hasAny(['feedbackRating']) || data.feedbackRating is number) &&
+             (!data.keys().hasAny(['feedbackHelpful']) || data.feedbackHelpful is string) &&
+             (!data.keys().hasAny(['feedbackFollowUp']) || data.feedbackFollowUp is string) &&
+             (!data.keys().hasAny(['feedbackSuggestions']) || data.feedbackSuggestions is string);
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 'email' in request.auth.token && request.auth.token.email == 'appuchandu2007@gmail.com';
+    }
+
+    match /{path=**}/entries/{entryId} {
+      allow list: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidUserProfile(incoming());
+      allow update: if isSignedIn() && request.auth.uid == userId && isValidUserProfile(incoming()) && incoming().createdAt == existing().createdAt;
+      
+      match /entries/{entryId} {
+        allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+        allow list: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+        allow create: if isSignedIn() && request.auth.uid == userId && isValidMoodEntry(incoming());
+        allow update: if false; // Mood entries are append-only
+      }
+    }
+
     match /reviews/{reviewId} {
       // allow list queries (any query for reviews)
       allow list: if true;

@@ -1,5 +1,44 @@
 {
   "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "gender": { "type": "string" },
+        "genderSpecify": { "type": "string" },
+        "dob": { "type": "string" },
+        "age": { "type": "number" },
+        "preferredLanguage": { "type": "string" },
+        "isFirstTimeUser": { "type": "boolean" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["uid", "createdAt", "updatedAt"]
+    },
+    "MoodEntry": {
+      "title": "MoodEntry",
+      "description": "A single emotional check-in entry",
+      "type": "object",
+      "properties": {
+        "mood": { "type": "string" },
+        "reason": { "type": "string" },
+        "firstTimeSupport": { "type": "string" },
+        "betterSinceLastVisit": { "type": "string" },
+        "sameSituation": { "type": "string" },
+        "previousHelpful": { "type": "string" },
+        "feedbackRating": { "type": "number" },
+        "feedbackHelpful": { "type": "string" },
+        "feedbackFollowUp": { "type": "string" },
+        "feedbackSuggestions": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["mood", "createdAt"]
+    },
     "Review": {
       "title": "Review",
       "description": "User reviews with feedback and ratings",
@@ -47,6 +86,14 @@
     }
   },
   "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile document"
+    },
+    "/users/{userId}/entries/{entryId}": {
+      "schema": { "$ref": "#/entities/MoodEntry" },
+      "description": "User mood entries"
+    },
     "/reviews/{reviewId}": {
       "schema": { "$ref": "#/entities/Review" },
       "description": "Collection of all user reviews"
