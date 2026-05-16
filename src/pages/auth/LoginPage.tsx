@@ -42,7 +42,7 @@ export default function LoginPage() {
           return;
         }
         if (data.user) {
-          navigate('/app/profile-setup');
+          navigate('/app/wellness');
         }
       } else {
         if (password !== confirmPassword) {
@@ -54,6 +54,7 @@ export default function LoginPage() {
           email,
           password,
           options: {
+            emailRedirectTo: "https://vvsolutions.netlify.app/dashboard",
             data: {
               name,
             }
@@ -73,7 +74,7 @@ export default function LoginPage() {
         }
 
         if (data.session) {
-           navigate('/app/profile-setup');
+           navigate('/app/wellness');
         } else {
            setSuccessMsg('Account created. If required by your database, please verify your email. Or you can try signing in now.');
            setTimeout(() => {
@@ -151,7 +152,7 @@ export default function LoginPage() {
         setError('');
         setResendMsg('');
         setNeedsVerification(false);
-        navigate('/app/profile-setup');
+        navigate('/app/wellness');
     } else {
         setError("Your email is not verified yet. Please check your inbox.");
     }

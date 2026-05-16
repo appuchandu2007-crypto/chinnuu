@@ -87,7 +87,7 @@ export default function Thoughts() {
           {/* Displayed Thoughts */}
           <div className="space-y-6">
             {thoughts.map((item, index) => (
-              <div key={item.id || index} className="bg-white p-8 rounded-3xl border border-pink-100 shadow-sm relative overflow-hidden">
+              <div key={`thought-${item.id || index}-${index}`} className="bg-white p-8 rounded-3xl border border-pink-100 shadow-sm relative overflow-hidden">
                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-pink-500"></div>
                 <p className="text-slate-600 text-lg leading-relaxed whitespace-pre-line mb-6 font-medium italic">
                   "{item.text}"

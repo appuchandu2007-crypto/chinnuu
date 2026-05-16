@@ -1,6 +1,8 @@
 {
   "name": "vvsolutionsin",
   "description": "Website ",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "microphone"
+  ],
   "majorCapabilities": []
 }

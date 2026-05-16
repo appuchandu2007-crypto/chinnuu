@@ -48,7 +48,7 @@ export default function QuotesTicker({ position = 'top' }: { position?: 'top' | 
     <div className={`w-full bg-pink-100/80 border-y border-pink-200 overflow-hidden h-10 flex items-center justify-center relative z-40 ${position === 'top' ? 'sticky top-0' : ''}`}>
       <AnimatePresence mode="wait">
         <motion.p
-          key={index}
+          key={`${position}-${index}`}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -20, opacity: 0 }}

@@ -12,6 +12,8 @@ import GoalSelectionPage from './pages/flow/GoalSelectionPage';
 import SupportPage from './pages/flow/SupportPage';
 import FeedbackPage from './pages/flow/FeedbackPage';
 import WellnessDashboardPage from './pages/flow/WellnessDashboardPage';
+import UserDashboardPage from './pages/flow/UserDashboardPage';
+import UserProfilePage from './pages/flow/UserProfilePage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import { useAuth } from './contexts/AuthContext';
 
@@ -39,7 +41,7 @@ export default function App() {
       
       {/* User Flow */}
       <Route path="/app" element={<ProtectedRoute><FlowLayout /></ProtectedRoute>}>
-        <Route index element={<Navigate to="/app/profile-setup" />} />
+        <Route index element={<Navigate to="/app/wellness" />} />
         <Route path="profile-setup" element={<ProfileSetupPage />} />
         <Route path="mood-check" element={<MoodCheckPage />} />
         <Route path="reason" element={<ReasonPage />} />
@@ -48,6 +50,8 @@ export default function App() {
         <Route path="support" element={<SupportPage />} />
         <Route path="feedback" element={<FeedbackPage />} />
         <Route path="wellness" element={<WellnessDashboardPage />} />
+        <Route path="dashboard" element={<UserDashboardPage />} />
+        <Route path="profile" element={<UserProfilePage />} />
       </Route>
       
       {/* Admin */}

@@ -155,11 +155,11 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {entries.slice(-10).reverse().map(entry => {
+              {entries.slice(-10).reverse().map((entry, index) => {
                 const userProfile = profiles.find(p => p.id === entry.user_id);
                 const date = new Date(entry.created_at).toLocaleDateString();
                 return (
-                  <tr key={entry.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
+                  <tr key={`admin-entry-${entry.id || index}-${index}`} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
                     <td className="py-3 px-4 text-sm text-slate-500 whitespace-nowrap">{date}</td>
                     <td className="py-3 px-4 text-sm font-medium text-slate-800">{userProfile?.name || 'Unknown'}</td>
                     <td className="py-3 px-4 text-xs text-slate-500">

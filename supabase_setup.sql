@@ -129,3 +129,29 @@ insert into thoughts (author, text, likes) values
 ('Vandana', 'Every sunrise is a gentle reminder that we can start again.\nIt does not matter how heavy yesterday felt, today is a blank canvas.\nTake a deep breath and give yourself permission to be simply be.\nYou are doing the best you can, and that is more than enough.', 18),
 ('Swamy', 'Healing is not a destination, but a quiet, daily practice.\nSome days you will take two steps forward, and others one step back.\nLearn to embrace the messy, beautiful process of becoming.\nYour scars are proof that you survived everything trying to break you.', 32),
 ('Mamtha', 'Stop rushing to have it all figured out right this second.\nYour journey unfolds exactly as it is meant to, in its own time.\nWater your own roots, be patient with your personal winter.\nSpring always arrives inside of those who endure the cold.', 41);
+
+-- VOICE ANALYSIS
+create table if not exists public.voice_analysis (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users(id) on delete cascade,
+  transcript text,
+  age_group text,
+  primary_emotion text,
+  confidence numeric,
+  text_sentiment text,
+  tone_sentiment text,
+  insight text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Enable RLS for voice_analysis
+alter table public.voice_analysis enable row level security;
+
+-- Create policy for user's own data
+drop policy if exists "Users can insert their own voice analysis" on public.voice_analysis;
+create policy "Users can insert their own voice analysis" on public.voice_analysis
+  for insert with check (auth.uid() = user_id);
+
+drop policy if exists "Users can view their own voice analysis" on public.voice_analysis;
+create policy "Users can view their own voice analysis" on public.voice_analysis
+  for select using (auth.uid() = user_id);

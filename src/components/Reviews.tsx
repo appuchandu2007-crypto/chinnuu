@@ -122,7 +122,7 @@ export default function Reviews() {
         {/* Reviews List */}
         <div className="grid sm:grid-cols-2 gap-4">
           {reviews.map((review, i) => (
-            <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
+            <div key={`review-${review.id || i}-${i}`} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col">
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <div className="font-bold text-slate-800">{review.name}</div>
@@ -130,7 +130,7 @@ export default function Reviews() {
                 </div>
                 <div className="flex text-yellow-400">
                   {[...Array(5)].map((_, j) => (
-                    <Star key={j} className={`w-4 h-4 ${j < review.rating ? 'fill-current text-yellow-400' : 'fill-slate-200 text-slate-200'}`} />
+                    <Star key={`star-${review.id || i}-${i}-${j}`} className={`w-4 h-4 ${j < review.rating ? 'fill-current text-yellow-400' : 'fill-slate-200 text-slate-200'}`} />
                   ))}
                 </div>
               </div>

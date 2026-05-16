@@ -13,6 +13,7 @@ export default function FeedbackPage() {
   const [rating, setRating] = useState(0);
   const [helpful, setHelpful] = useState<string | null>(null);
   const [followUp, setFollowUp] = useState<string | null>(null);
+  const [scheduleTime, setScheduleTime] = useState<string>('');
   const [suggestions, setSuggestions] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,6 +34,7 @@ export default function FeedbackPage() {
         rating,
         helpful,
         follow_up: followUp,
+        schedule_time: scheduleTime,
         suggestions
       };
 
@@ -62,17 +64,22 @@ export default function FeedbackPage() {
       
       if (rating) message += `• Rating: ${rating} Stars\n`;
       if (helpful) message += `• Did this help: ${helpful}\n`;
-      if (followUp) message += `• Follow up tomorrow: ${followUp}\n`;
+      if (followUp) {
+        message += `• Follow up tomorrow: ${followUp}\n`;
+        if (followUp === 'Yes, please' && scheduleTime) {
+          message += `• Scheduled Time: ${new Date(scheduleTime).toLocaleString()}\n`;
+        }
+      }
       if (suggestions) message += `• Suggestions: ${suggestions}\n`;
 
       const whatsappUrl = `https://wa.me/917411837814?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
 
-      navigate('/app/wellness');
+      navigate('/app/dashboard');
     } catch (err) {
       console.error(err);
       alert("Please ensure the entries table exists in Supabase. Check the SQL prompt the AI provided.");
-      navigate('/app/wellness'); // let them pass anyway to see dashboard
+      navigate('/app/dashboard'); // let them pass anyway to see dashboard
     } finally {
       setIsSubmitting(false);
     }
@@ -115,7 +122,7 @@ export default function FeedbackPage() {
 
         <div>
           <label className="block text-sm font-bold text-slate-700 mb-4">Want follow-up tomorrow?</label>
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-4">
             {['Yes, please', 'No, thanks'].map(opt => (
               <button
                 key={opt}
@@ -126,6 +133,17 @@ export default function FeedbackPage() {
               </button>
             ))}
           </div>
+          {followUp === 'Yes, please' && (
+            <div className="animate-in fade-in slide-in-from-top-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">When should we schedule a call?</label>
+              <input
+                type="datetime-local"
+                value={scheduleTime}
+                onChange={(e) => setScheduleTime(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none transition-all"
+              />
+            </div>
+          )}
         </div>
 
         <div>

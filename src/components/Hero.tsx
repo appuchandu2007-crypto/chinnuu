@@ -6,21 +6,6 @@ export default function Hero() {
 
   return (
     <section id="home" className="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-      <div className="mb-8 flex justify-center animate-fade-in">
-        <a
-          href="https://wa.me/917411837814"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 px-5 py-2.5 bg-[#25D366]/10 text-slate-800 rounded-full border border-[#25D366]/30 hover:bg-[#25D366]/20 transition-all hover:scale-105"
-        >
-          <div className="bg-[#25D366] text-white p-1.5 rounded-full">
-            <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
-          </div>
-          <span className="font-medium text-sm sm:text-base">Someone is here to listen to you, talk freely.</span>
-          <span className="bg-[#25D366] text-white text-xs font-bold px-2 py-1 rounded-full ml-1 hidden sm:inline-block">Chat on WhatsApp</span>
-        </a>
-      </div>
-
       <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight">
         Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">VV Solutions</span>
         <br />
