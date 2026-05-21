@@ -5,7 +5,7 @@ import { supabase } from '../../supabase';
 import { Activity, MessageCircle, Star, CheckCircle2, ArrowLeft } from 'lucide-react';
 
 export default function UserDashboardPage() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();

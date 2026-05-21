@@ -61,11 +61,6 @@ export default function Reviews() {
     setIsSubmitting(false);
   };
 
-  const handleLike = async (id: string, currentLikes: number) => {
-    await supabase.from('reviews').update({ likes: currentLikes + 1 }).eq('id', id);
-    fetchReviews();
-  };
-
   return (
     <section id="reviews" className="py-20 px-6 max-w-6xl mx-auto bg-slate-50/50">
       <div className="mb-12">

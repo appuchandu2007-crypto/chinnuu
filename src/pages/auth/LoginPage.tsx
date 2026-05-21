@@ -35,6 +35,8 @@ export default function LoginPage() {
           if (error.message.includes('Email not confirmed')) {
             setError("Your email is not verified yet. Please check your inbox.");
             setNeedsVerification(true);
+          } else if (error.message === 'Failed to fetch') {
+            setError("Network error: Failed to connect to the database. If your Supabase project is paused, please unpause it. Disable AdBlockers or strict privacy protections for this site.");
           } else {
             setError(error.message);
           }
@@ -62,7 +64,11 @@ export default function LoginPage() {
         });
         
         if (error) {
-          setError(error.message);
+          if (error.message === 'Failed to fetch') {
+            setError("Network error: Failed to connect to the database. If your Supabase project is paused, please unpause it. Disable AdBlockers or strict privacy protections for this site.");
+          } else {
+            setError(error.message);
+          }
           setLoading(false);
           return;
         }
@@ -107,7 +113,12 @@ export default function LoginPage() {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: window.location.origin + "/login",
       });
-      if (error) throw error;
+      if (error) {
+        if (error.message === 'Failed to fetch') {
+          throw new Error("Network error: Failed to connect to the database. If your Supabase project is paused, please unpause it.");
+        }
+        throw error;
+      }
       setSuccessMsg('Password reset link sent to your email.');
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -131,7 +142,12 @@ export default function LoginPage() {
             emailRedirectTo: window.location.origin + "/login",
           }
         });
-        if (error) throw error;
+        if (error) {
+          if (error.message === 'Failed to fetch') {
+            throw new Error("Network error: Failed to connect to the database. If your Supabase project is paused, please unpause it.");
+          }
+          throw error;
+        }
         setResendMsg('Verification email sent again. Please check your inbox.');
       } catch (err: unknown) {
         if (err instanceof Error) {

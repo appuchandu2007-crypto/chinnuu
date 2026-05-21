@@ -1,4 +1,4 @@
-import { Users, Clock, Globe2, HeartHandshake, MessageCircle, ArrowRight } from 'lucide-react';
+import { Users, Clock, Globe2, HeartHandshake, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Hero() {

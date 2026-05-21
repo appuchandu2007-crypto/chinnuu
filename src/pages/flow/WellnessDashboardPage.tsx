@@ -4,8 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../supabase';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { format } from 'date-fns';
-import { SmilePlus, Mic } from 'lucide-react';
-import VoiceAnalyzer from '../../components/VoiceAnalyzer';
+import { SmilePlus } from 'lucide-react';
 
 const MOOD_SCORES: Record<string, number> = {
   'Happy': 100,
@@ -30,8 +29,6 @@ export default function WellnessDashboardPage() {
   const navigate = useNavigate();
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isVoiceAnalyzerOpen, setIsVoiceAnalyzerOpen] = useState(false);
-
   // If there's an ongoing check-in, the state will be populated
   const isMidFlow = !!location.state?.mood;
 
@@ -51,10 +48,10 @@ export default function WellnessDashboardPage() {
         }
 
         if (data) {
-          let fetched = data.map(doc => ({
-            id: doc.id,
+          let fetched = data.map((doc, idx) => ({
+            id: doc.id || `doc-${idx}`,
             ...doc,
-            date: format(new Date(doc.created_at), 'MMM dd'),
+            date: format(new Date(doc.created_at), 'MMM dd, h:mm a'),
             score: MOOD_SCORES[doc.mood] || 50
           }));
           
@@ -63,7 +60,7 @@ export default function WellnessDashboardPage() {
                id: 'current_uncommitted',
                mood: location.state.mood,
                reason_text: location.state.reasonText || location.state.reasonTag,
-               date: format(new Date(), 'MMM dd'),
+               date: format(new Date(), 'MMM dd, h:mm a'),
                score: MOOD_SCORES[location.state.mood] || 50
              });
           }
@@ -110,24 +107,6 @@ export default function WellnessDashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <button
-          onClick={() => setIsVoiceAnalyzerOpen(true)}
-          className="col-span-1 md:col-span-2 bg-gradient-to-r from-pink-500 to-rose-500 p-6 rounded-3xl shadow-lg shadow-pink-500/20 text-white flex items-center justify-between group hover:scale-[1.01] transition-transform"
-        >
-          <div className="flex items-center gap-4">
-            <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm">
-              <Mic size={32} className="text-white" />
-            </div>
-            <div className="text-left">
-              <h3 className="text-xl font-bold mb-1">AI Voice Check-In</h3>
-              <p className="text-pink-100 font-medium text-sm md:text-base">Speak your mind and let AI analyze your emotional tone.</p>
-            </div>
-          </div>
-          <div className="hidden md:flex bg-white/20 px-6 py-3 rounded-xl font-bold uppercase tracking-wider text-sm backdrop-blur-sm group-hover:bg-white text-white group-hover:text-pink-600 transition-colors">
-            Start Analysis
-          </div>
-        </button>
-
         {latestEntry && (
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
             <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Today's Mood</h3>
@@ -152,11 +131,12 @@ export default function WellnessDashboardPage() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={entries} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                <XAxis dataKey="id" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} tickFormatter={(id) => { const entry = entries.find(e => e.id === id); return entry ? entry.date : ''; }} />
                 <YAxis hide domain={[0, 100]} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '1rem', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', color: '#1e293b' }}
+                  labelFormatter={(id) => { const entry = entries.find(e => e.id === id); return entry ? entry.date : id; }}
                   formatter={(value: number, name: string, props: any) => [props.payload.mood, 'Mood']}
                 />
                 <Line 
@@ -192,8 +172,6 @@ export default function WellnessDashboardPage() {
           Start New Check-in
         </Link>
       )}
-
-      <VoiceAnalyzer isOpen={isVoiceAnalyzerOpen} onClose={() => setIsVoiceAnalyzerOpen(false)} />
     </div>
   );
 }

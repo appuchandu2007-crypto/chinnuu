@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../supabase';
-import { Users, Smile, Activity, Star, TrendingUp, RotateCcw } from 'lucide-react';
+import { Users, Smile, Star, TrendingUp, RotateCcw } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   const [profiles, setProfiles] = useState<any[]>([]);

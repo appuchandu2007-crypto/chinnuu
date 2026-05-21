@@ -1,37 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../supabase';
-import { Sparkles, User, Phone, Calendar, Globe, ThumbsUp, MessageSquare, ArrowLeft, Star, Clock } from 'lucide-react';
+import { User, Phone, Calendar, Globe, ThumbsUp, MessageSquare, ArrowLeft, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function UserProfilePage() {
   const { profile, user } = useAuth();
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
-  const [voiceAnalysis, setVoiceAnalysis] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchHistory() {
       if (!user) return;
       try {
-        const [entriesRes, voiceRes] = await Promise.all([
-          supabase
-            .from('entries')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false }),
-          supabase
-            .from('voice_analysis')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
-        ]);
+        const { data, error } = await supabase
+          .from('entries')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
         
-        if (entriesRes.data) {
-          setFeedbacks(entriesRes.data);
-        }
-        if (voiceRes.data) {
-          setVoiceAnalysis(voiceRes.data);
+        if (error) {
+          console.error(error);
+        } else if (data) {
+          setFeedbacks(data);
         }
       } catch (e) {
         console.error(e);
@@ -79,45 +70,6 @@ export default function UserProfilePage() {
         </div>
 
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-pink-500" /> Recent AI Voice Analysis
-            </h2>
-            
-            {loading ? (
-              <p className="text-slate-500">Loading analysis...</p>
-            ) : voiceAnalysis.length === 0 ? (
-              <div className="text-center py-10 bg-slate-50 rounded-2xl">
-                <Sparkles className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                <p className="text-slate-500 font-medium">No voice analysis yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {voiceAnalysis.slice(0, 3).map((va, i) => (
-                  <div key={`va-${va.id || i}-${i}`} className="p-4 border border-slate-100 rounded-2xl bg-pink-50/50">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex items-center text-pink-600 font-bold text-sm">
-                        Emotion: {va.primary_emotion || 'Unknown'}
-                      </div>
-                      <span className="text-xs text-slate-400 font-medium flex items-center gap-1">
-                        <Clock className="w-3 h-3"/> {new Date(va.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                    {va.insight && <p className="text-sm text-slate-800 font-medium mt-2">{va.insight}</p>}
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="text-[10px] bg-white border border-slate-200 text-slate-500 px-2 py-1 rounded-md mb-2">
-                        Text: {(va.text_sentiment?.toLowerCase() === 'positive' || va.text_sentiment?.toLowerCase() === 'yes') ? 'Yes' : (va.text_sentiment?.toLowerCase() === 'negative' || va.text_sentiment?.toLowerCase() === 'no') ? 'No' : 'Neutral'}
-                      </span>
-                      <span className="text-[10px] bg-white border border-slate-200 text-slate-500 px-2 py-1 rounded-md mb-2">
-                        Voice: {(va.tone_sentiment?.toLowerCase() === 'positive' || va.tone_sentiment?.toLowerCase() === 'yes') ? 'Yes' : (va.tone_sentiment?.toLowerCase() === 'negative' || va.tone_sentiment?.toLowerCase() === 'no') ? 'No' : 'Neutral'}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
             <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
               <ThumbsUp className="w-6 h-6 text-pink-500" /> Your Feedback History

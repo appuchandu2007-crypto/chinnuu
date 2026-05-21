@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Phone, HeartPulse, CheckCircle2, MessageCircle } from 'lucide-react';
+import { Phone, HeartPulse, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../supabase';
 
-const EMERGENCY_EMOTIONS = ['Hopeless', 'Self harm', 'Severe depression', 'heartbroken', 'lonely', 'sad', 'stress'];
-
 export default function SupportPage() {
-  const { updateProfile, profile, user } = useAuth();
+  const { profile, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state || {};
